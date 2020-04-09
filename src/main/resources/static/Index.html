@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Psych!</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="invisible" id="app">
+    <div class="nav">
+        <a href="#" class="button" v-on:click="page='play' ">Play</a>
+        <a href="#" class="button" v-on:click="page='profile' ">Edit Profile</a>
+        <a href="#" class="button" v-on:click="page='leaderboard'; fetchLeaderBoard(); ">LeaderBoard</a>
+        <a href="/logout" class="button">Logout <b>{{player.alias}}</b></a>
+    </div>
+    <hr>
+
+    <div v-if="page === 'play' " class="play">
+        <div v-if="player.currentGameId" class="section">
+            {{ gameState.id}}
+            {{ gameState.numRounds }}
+            {{ gameState.gameMode }}
+            {{ gameState }}
+        </div>
+        <div v-else>
+            <div class="section create">
+                <div class="heading">Create Game</div>
+                <label>Number of Rounds</label>
+                <input type="number" v-model="createGameData.numRounds">
+
+                <label>Has Ellen?</label>
+                <input type="checkbox" v-model="createGameData.hasEllen">
+                <div class="modes">
+                    <div class="cards">
+                        <div class="card" v-for="mode in gameModes" v-on:click="createGame(mode.title)" >
+                            <div class="title">{{mode.title}}</div>
+                            <img :src="mode.image" alt="">
+                            <div class="description"> {{ mode.description }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="section join">
+                <div class="heading">Join Game</div>
+                <label>Secret Code</label>
+                <input type="text" v-model="joinGameData.secretCode" v-on:keyup.enter="joinGame()">
+            </div>
+        </div>
+    </div>
+    <div v-if="page === 'profile' " class="profile">
+        <div class="profile-row">
+            <label>Alias</label>
+            <input type="text" v-model="profileEditData.alias">
+        </div>
+        <div class="profile-row">
+            <label >Profile Image</label>
+            <input type="text" v-model="profileEditData.picURL">
+            <img v-bind:src="profileEditData.picURL" alt="">
+        </div>
+        <div class="profile-row">
+            <label>Email</label>
+            <input type="text" v-model="profileEditData.email">
+        </div>
+        <div class="button" v-on:click="updateProfileData()">Save</div>
+    </div>
+    <div v-if="page === 'leaderboard' ">
+        <div class="leaderboard">
+            <div class="leaderboard-row leaderboard-heading">
+                <span class="name">Player</span>
+                <span>Correct Answers</span>
+                <span>Got Psyched</span>
+                <span>Psyched Others</span>
+                <span>Score</span>
+            </div>
+            <div class="leaderboard-row" v-for="row in leaderboard">
+                <img v-bind:src="row.picURL" alt="">
+                <span class="name">{{ row.alias }}</span>
+                <span>{{ row.correctAnswerCount }}</span>
+                <span>{{ row.gotPsychedCount }}</span>
+                <span>{{ row.psychedOthersCount }}</span>
+                <span>{{ calculateScore(row) }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="error">{{ errorText }}</div>
+
+
+</div>
+<script src="js/app.js"></script>
+</body>
+</html>

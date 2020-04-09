@@ -1,5 +1,7 @@
 package com.gotcha.game.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,12 +17,22 @@ public class PlayerAnswer extends Auditable{
     @NotNull
     @ManyToOne
     @Getter @Setter
+    @JsonBackReference
     private Round round;
+
     @NotNull
     @ManyToOne
     @Getter @Setter
+    @JsonIdentityReference
     private Player player;
+
     @NotBlank
     @Getter @Setter
     private String answer;
+
+    public PlayerAnswer(@NotNull Round round, @NotNull Player player, @NotBlank String answer) {
+        this.round = round;
+        this.player = player;
+        this.answer = answer;
+    }
 }

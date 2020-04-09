@@ -1,5 +1,7 @@
 package com.gotcha.game.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,12 +30,23 @@ public class Player extends User {
     @OneToOne(cascade = CascadeType.ALL)
     @Getter
     @Setter
+    @JsonManagedReference
     private Stat stats = new Stat();
+
+    @Getter @Setter @ManyToOne @JsonIdentityReference
+    private Game currentGame = null;
 
     @Getter
     @Setter
-    @ManyToMany
+    @ManyToMany(mappedBy = "players")
+    @JsonIdentityReference
     private Set<Game> games = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @Getter
+    @Setter
+    private Stat stat = new Stat();
 
     public Player() {
     }
@@ -48,6 +61,10 @@ public class Player extends User {
 
     public static Builder newPlayer() {
         return new Builder();
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
     }
 
 
@@ -65,17 +82,17 @@ public class Player extends User {
             return new Player(this);
         }
 
-        public Builder email(String email) {
+        public Builder email(@Email @NotBlank  String email) {
             this.email = email;
             return this;
         }
 
-        public Builder saltedHashedPassword(String saltedHashedPassword) {
+        public Builder saltedHashedPassword(@NotBlank String saltedHashedPassword) {
             this.saltedHashedPassword = saltedHashedPassword;
             return this;
         }
 
-        public Builder alias(String alias) {
+        public Builder alias(@NotBlank  String alias) {
             this.alias = alias;
             return this;
         }

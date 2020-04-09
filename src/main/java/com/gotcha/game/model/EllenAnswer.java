@@ -1,5 +1,6 @@
 package com.gotcha.game.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +10,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "ellenanswer")
+@Table(name = "ellenanswers")
 public class EllenAnswer extends  Auditable{
     @ManyToOne
     @Getter @Setter
+    @JsonBackReference
     private Question question;
 
     @Getter @Setter

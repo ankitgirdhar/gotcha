@@ -2,6 +2,7 @@ package com.gotcha.game.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -21,11 +22,25 @@ public abstract class User extends Auditable{
 
     @NotBlank
     @Getter
-    @Setter
+
     private String saltedHashPassword;
 
-    @ManyToMany
+    public User() {
+    }
+
+    public void setSaltedHashPassword(String value) {
+        this.saltedHashPassword = new BCryptPasswordEncoder(5).encode(value);
+    }
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @Getter
     @Setter
     Set<Role> roles = new HashSet<>();
+
+    public User(User user) { // just a copy constructor... jo hame user mila h uske parameters hame as a apne properties chahiye....
+        email = user.email;
+        saltedHashPassword = user.getSaltedHashPassword();
+        roles = user.getRoles();
+    }
 }
